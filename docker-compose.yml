@@ -1,3 +1,31 @@
 version: '3.3'
 services:
+ db:
+  container_name: ${MYSQL_CONTAINER_NAME}
+  image: ${MYSQL_IMAGE_VERSION}
+  volumes:
+   - db_data:/var/lib/mysql
+  restart: always
+  environment:
+   MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+   MYSQL_DATABASE: ${MYSQL_DATABASE}
+   MYSQL_USER: ${MYSQL_USER}
+   MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+ wordpress:
+  container_name: ${WORDPRESS_CONTAINER_NAME}
+  depends_on:
+   - db
+  image: ${WORDPRESS_IMAGE_VERSION}
+  ports:
+   - ${PORT}:80
+  restart: always
+  volumes:
+   - wp_files:/var/www/html
+  environment:
+   WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
+   WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+   WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+   WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
 volumes:
+ db_data:
+ wp_files:
