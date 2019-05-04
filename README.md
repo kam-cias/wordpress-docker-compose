@@ -1,4 +1,4 @@
-# wordpress-docker-compose
+# WordPress docker-compose
 
 Starts the containers in the background and leaves them running.
 
