@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.7'
 services:
  db:
   container_name: ${MYSQL_CONTAINER_NAME}
@@ -11,13 +11,20 @@ services:
    MYSQL_DATABASE: ${MYSQL_DATABASE}
    MYSQL_USER: ${MYSQL_USER}
    MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  networks:
+   db_net:
+    ipv4_address: 172.16.238.10
+    ipv6_address: 2001:3984:3989::10
  wordpress:
   container_name: ${WORDPRESS_CONTAINER_NAME}
   depends_on:
    - db
   image: ${WORDPRESS_IMAGE_VERSION}
   ports:
-   - ${PORT}:80
+   - target: 80
+     published: 8080
+     protocol: tcp
+     mode: host
   restart: always
   volumes:
    - wp_files:/var/www/html
@@ -26,6 +33,23 @@ services:
    WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
    WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
    WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+  networks:
+   wordpress_net:
+    ipv4_address: 172.16.238.10
+    ipv6_address: 2001:3984:3989::10
 volumes:
  db_data:
  wp_files:
+networks:
+ wordpress_net:
+  ipam:
+   driver: default
+   config:
+    - subnet: 172.16.238.0/24
+    - subnet: "2001:3984:3989::/64"
+db_net:
+  ipam:
+   driver: default
+   config:
+    - subnet: 172.16.238.0/24
+    - subnet: "2001:3984:3989::/64"
